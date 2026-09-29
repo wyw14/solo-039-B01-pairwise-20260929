@@ -32,8 +32,14 @@ func (l OperatingLimits) ValidateColumn(c Column) error {
 }
 
 func (l OperatingLimits) ValidateEnergy(reboiler Reboiler, reflux Reflux) error {
+	if math.IsNaN(reboiler.Steam) || math.IsInf(reboiler.Steam, 0) {
+		return errors.New("steam signal is not a finite number")
+	}
 	if reboiler.Steam < 0 || reboiler.Steam > l.MaxSteam {
 		return errors.New("steam outside operating limits")
+	}
+	if math.IsNaN(reflux.Ratio) || math.IsInf(reflux.Ratio, 0) {
+		return errors.New("reflux signal is not a finite number")
 	}
 	if reflux.Ratio < 0 || reflux.Ratio > l.MaxReflux {
 		return errors.New("reflux outside operating limits")
